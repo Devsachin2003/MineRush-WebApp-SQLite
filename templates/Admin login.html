@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+    />
+    <title>Admin login</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/styles.min.css" />
+    <style>
+      img {
+        width: 250px;
+      }
+    </style>
+  </head>
+  <body>
+    <center>
+      <div>
+        <nav
+          class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button"
+          style="height: 80px; color: #ffffff; background: #4d2422"
+        >
+          <div class="container-fluid">
+            <a class="navbar-brand" href="#" style="color: #ffffff"
+              >&nbsp;MineRush</a
+            ><button
+              data-bs-toggle="collapse"
+              class="navbar-toggler"
+              data-bs-target="#navcol-1"
+            >
+              <span class="visually-hidden">Toggle navigation</span
+              ><span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+              <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                  <a
+                    class="nav-link active"
+                    style="color: #ffffff"
+                    href="/About"
+                    >About</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link active"
+                    style="color: #ffffff"
+                    href="/Contactus"
+                    >Contact us</a
+                  >
+                </li>
+                <li class="nav-item"></li>
+                <li class="nav-item"></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <div class="login-card">
+        <br />
+        <center>
+          <img
+            class="profile-img-card"
+            src="static/App icon imgs/png a.png"
+            style="height: 150px; width: 150px"
+          />
+        </center>
+        <p class="profile-name-card"><center>ADMIN LOGIN</center></p>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    </center>
+    <div class="h-100 d-flex align-items-center justify-content-center">
+      <form class="form-signin" method="post" action="/Alogin">
+        <div>
+          <span class="reauth-email"> </span>
+          <input
+            class="form-control"
+            type="email"
+            name="email"
+            id="email"
+            required=""
+            style="height: 50px; width: 400px"
+            placeholder="Email address"
+            autofocus=""
+          /><br /><input
+            class="form-control"
+            type="password"
+            id="password"
+            name="password"
+            required=""
+            style="height: 50px; width: 400px"
+            placeholder="Password"
+          />
+          <br />
+        </div>
+        <button
+          class="btn btn-primary btn-lg d-block btn-signin"
+          type="submit"
+          style="
+            background: rgb(222, 28, 15);
+            height: 50px;
+            width: 400px;
+            color: #ffffff;
+          "
+        >
+          Log in
+        </button>
+      </form>
+    </div>
+    {% if error %}
+    <p style="color: red">{{ error }}</p>
+    {% endif %}
+  </body>
+</html>
