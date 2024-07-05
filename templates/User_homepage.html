@@ -19,7 +19,8 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
-    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css" />
+    <link rel="stylesheet" href="static/userhomepagefont.css" />
+    <link rel="stylesheet" href="static/userhomepage.css" />
   </head>
   <body>
     <div>
@@ -28,8 +29,7 @@
         style="height: 80px; color: #ffffff; background: #4d3837"
       >
         <div class="container-fluid">
-          <a class="navbar-brand" style="color: rgb(255, 255, 255)" href="#"
-            >MineRush</a
+          <a class="navbar-brand" href="#">MineRush</a
           ><button
             data-bs-toggle="collapse"
             class="navbar-toggler"
@@ -42,27 +42,33 @@
             <ul class="navbar-nav ms-auto">
               <li class="nav-item">
                 <a
-                  class="nav-link active"
-                  style="color: #ffffff"
+                  class="nav-link"
+                  style="color: #ffffff; background-color: #4d3837"
                   href="/Userhomepage"
                   ><i class="fa fa-home"></i>&nbsp;Home</a
                 >
               </li>
               <li class="nav-item">
-                <a class="nav-link active" style="color: #ffffff" href="#"
+                <a
+                  class="nav-link"
+                  style="color: #ffffff; background-color: #4d3837"
+                  href="/Userhistory"
                   ><i class="fa fa-history"></i>&nbsp;History</a
                 >
               </li>
               <li class="nav-item">
                 <a
-                  class="nav-link active"
-                  style="color: #ffffff"
-                  href="/Myprofile/<email>"
+                  class="nav-link"
+                  style="color: #ffffff; background-color: #4d3837"
+                  href="/Myprofile"
                   ><i class="fa fa-user-circle"></i>My Profile</a
                 >
               </li>
               <li class="nav-item">
-                <a class="nav-link active" style="color: #ffffff" href="/logout"
+                <a
+                  class="nav-link"
+                  style="color: #ffffff; background-color: #4d3837"
+                  href="/logout"
                   ><i class="fas fa-sign-out-alt"></i>Logout</a
                 >
               </li>
@@ -76,11 +82,15 @@
       <div class="bg-light border rounded border-light jumbotron py-5 px-4">
         <h1 class="text-center">
           <br /><strong
-            ><span style="color: rgb(0, 0, 0)"
+            ><span
+              style="
+                color: rgb(0, 0, 0);
+                background-color: rgba(248, 249, 250, 0);
+              "
               >Welcome partners and customers! Together, we shape the future of
               mining."</span
             ></strong
-          ><br /><span style="color: rgb(154, 25, 25)"
+          ><span style="color: rgb(154, 25, 25)"
             >Scroll down to explore the depths of the Mining industry.</span
           >
         </h1>
@@ -89,96 +99,118 @@
       </div>
     </section>
     <div
-      class="bg-light border rounded border-light hero-technology jumbotron py-5 px-4"
+      class="p-5 mb-4 bg-light round-3"
       style="
-        background: url('static/img/chatbot.webp') right / cover;
-        padding: 0px 24px;
+        background: url('static/img/chatbot.webp') center / cover no-repeat;
       "
     >
-      <h1 class="hero-title" style="color: #ffffff">MineRushbot</h1>
-      <p class="hero-subtitle" style="color: #ffffff">
-        "Your Legal Guide: Chatbot for Mining Laws and Stakeholder Queries"
-      </p>
-      <p>
+      <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">
+          <span style="color: rgb(255, 255, 255)">MineRushbot</span>
+        </h1>
+        <p class="col-md-8 fs-4">
+          <br /><span
+            style="
+              color: rgb(255, 255, 255);
+              background-color: rgba(248, 249, 250, 0);
+            "
+            >"Your Legal Guide: Chatbot for Mining Laws and Stakeholder
+            Queries"</span
+          >
+        </p>
         <a
-          class="btn btn-primary btn-lg hero-button"
+          class="btn btn-primary btn-lg"
           role="button"
           href="#"
-          style="background: rgb(203, 32, 21)"
-          >Start new chat</a
+          style="background: rgb(166, 18, 18)"
+          >New Chat</a
         >
-      </p>
+      </div>
     </div>
     <div
-      class="bg-light border rounded border-light hero-technology jumbotron py-5 px-4"
-      style="background: url('static/img/rules.jpg'); filter: blur(0px)"
-    >
-      <h1 class="hero-title" style="color: #ffffff">Rules and Acts</h1>
-      <p class="hero-subtitle">
-        "Mining Legalities Unveiled: Your Exclusive Guide"
-      </p>
-      <p>
-        <a
-          class="btn btn-primary btn-lg hero-button"
-          role="button"
-          href="/Rulesandacts"
-          style="background: rgb(213, 48, 38)"
-          >Learn more</a
-        >
-      </p>
-    </div>
-    <div
-      class="bg-light border rounded border-light hero-technology jumbotron py-5 px-4"
+      class="p-5 mb-4 bg-light round-3"
       style="
-        background: url('static/img/6415e524fbe89fc3b9a26ced_compelling-instructions-1920.webp')
-          no-repeat;
+        background: url('static/img/1680770125-6097.avif') no-repeat;
         background-size: cover;
       "
     >
-      <h1
-        class="hero-title"
-        style="
-          background: url('https://cdn.bootstrapstudio.io/placeholders/1400x800.png');
-        "
-      >
-        <span style="color: rgb(0, 0, 0)">Instructions</span>
-      </h1>
-      <p class="hero-subtitle">
-        "Guidelines for Navigation: Instructions for Smooth Exploration"
-      </p>
-      <p>
+      <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">
+          <span style="color: rgb(255, 255, 255)">Rules and Acts</span>
+        </h1>
+        <p class="col-md-8 fs-4">
+          <br /><span
+            style="
+              color: rgb(255, 255, 255);
+              background-color: rgba(0, 0, 0, 0.1);
+            "
+            >"Mining Legalities Unveiled: Your Exclusive Guide"</span
+          ><br /><br />
+        </p>
         <a
-          class="btn btn-primary btn-lg hero-button"
+          class="btn btn-primary btn-lg"
           role="button"
-          href="/User_instructions"
-          style="background: rgb(213, 18, 18)"
-          >Check out</a
+          href="/Rulesandacts"
+          style="background: rgb(149, 33, 33)"
+          >Learn more</a
         >
-      </p>
+      </div>
     </div>
     <div
-      class="bg-light border rounded border-light hero-technology jumbotron py-5 px-4"
+      class="p-5 mb-4 bg-light round-3"
+      style="
+        background: url('static/img/help-pictures-2000-x-869-m69q0n3uzv5ul3w2.jpg')
+          top / cover;
+      "
+    >
+      <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Instructions</h1>
+        <p class="col-md-8 fs-4">
+          <br /><span style="color: rgb(255, 255, 255)"
+            >"Guidelines for Navigation: Instructions for Smooth
+            Exploration"</span
+          >
+        </p>
+        <a
+          class="btn btn-primary btn-lg"
+          role="button"
+          href="/User_instructions"
+          style="background: rgb(153, 38, 38)"
+          >Click here</a
+        >
+      </div>
+    </div>
+    <div
+      class="p-5 mb-4 bg-light round-3"
       style="
         background: url('static/img/business-developer-work-experience-in-new-zealand.jpg')
           no-repeat;
         background-size: cover;
       "
     >
-      <h1 class="hero-title" style="color: #ffffff">Explore Internships</h1>
-      <p class="hero-subtitle" style="color: #ffffff">
-        "Find Your Path: Explore Internship Opportunities"
-      </p>
-      <p>
+      <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">
+          <span style="color: rgb(255, 255, 255)">Explore Internships</span>
+        </h1>
+        <p class="col-md-8 fs-4">
+          <br /><span
+            style="
+              color: rgb(255, 255, 255);
+              background-color: rgba(0, 0, 0, 0.1);
+            "
+            >"Find Your Path: Explore Internship Opportunities"</span
+          >
+        </p>
         <a
-          class="btn btn-primary btn-lg hero-button"
+          class="btn btn-primary btn-lg"
           role="button"
-          href="#"
-          style="background: rgb(208, 32, 32)"
+          href="/Explore_internships"
+          style="background: rgb(173, 14, 14)"
           >Search Internships</a
         >
-      </p>
+      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/script.min.js"></script>
+    <script src="static/userhomepage.js"></script>
   </body>
 </html>

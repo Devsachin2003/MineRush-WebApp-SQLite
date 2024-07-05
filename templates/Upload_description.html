@@ -51,7 +51,7 @@
               <li class="nav-item">
                 <a
                   class="nav-link"
-                  style="color: #ffffff"
+                  style="color: #ffffff; background-color: #4d3837"
                   href="/Admindashboard"
                   ><i class="fa fa-home"></i>&nbsp;Home</a
                 >
@@ -59,12 +59,18 @@
               <li class="nav-item"></li>
               <li class="nav-item"></li>
               <li class="nav-item">
-                <a class="nav-link" style="color: #ffffff" href="#"
+                <a
+                  class="nav-link"
+                  style="color: #ffffff; background-color: #4d3837"
+                  href="#"
                   ><i class="fa fa-user-circle"></i>Myprofile</a
                 >
               </li>
               <li class="nav-item">
-                <a class="nav-link" style="color: #ffffff" href="/Alogout"
+                <a
+                  class="nav-link"
+                  style="color: #ffffff; background-color: #4d3837"
+                  href="/Alogout"
                   ><i class="fas fa-sign-out-alt"></i>Logout</a
                 >
               </li>
@@ -79,8 +85,9 @@
     >
       <form
         class="bg-light border rounded border-secondary shadow-lg"
-        method="post"
+        method="POST"
         style="background: rgb(248, 248, 249)"
+        action="{{ url_for('adddescription') }}"
       >
         <h2 class="text-center" style="font-family: Alatsi, sans-serif">
           Upload Description
@@ -95,32 +102,52 @@
               font-size: 12px;
               width: 100%;
             "
+            name="page"
+            id="page"
           >
             Please select the page where you would like to upload the
             description.
             <optgroup label="Select page"></optgroup>
-            <option>Coal mines act, 1952</option>
-            <option>Indian explosives act, 1884</option>
-            <option>Colliery control act, 2000</option>
-            <option>Colliery control act, 2004</option>
-            <option>The coal mines regulations, 2017</option>
-            <option>Payment of wages(mines) rules, 1956</option>
-            <option>CBA ACT, 1957</option>
-            <option>Land acquisition act, 1894</option>
-            <option>R&R act, 2013</option>
+            <option value="Coal mines act, 1952">Coal mines act, 1952</option>
+            <option value="Indian explosives act, 1884">
+              Indian explosives act, 1884
+            </option>
+            <option value="Colliery control act, 2000">
+              Colliery control act, 2000
+            </option>
+            <option value="Colliery control act, 2004">
+              Colliery control act, 2004
+            </option>
+            <option value="The coal mines regulations, 2017">
+              The coal mines regulations, 2017
+            </option>
+            <option value="Payment of wages(mines) rules, 1956">
+              Payment of wages(mines) rules, 1956
+            </option>
+            <option value="CBA ACT, 1957">CBA ACT, 1957</option>
+            <option value="Land acquisition act, 1894">
+              Land acquisition act, 1894
+            </option>
+            <option value="R&R act, 2013">R&R act, 2013</option>
           </select>
         </div>
         <div class="form-group mb-3">
           <textarea
             class="form-control"
-            name="message"
+            name="description"
+            id="description"
             placeholder="Add description"
             rows="14"
           ></textarea>
         </div>
         <div class="form-group mb-3">
-          <button class="add">Upload</button>
+          <button class="add" type="submit">Upload</button>
         </div>
+        <!-- Flash message display -->
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %} {% endif %} {% endwith %}
       </form>
     </section>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

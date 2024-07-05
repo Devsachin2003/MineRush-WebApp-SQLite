@@ -16,6 +16,9 @@
       img {
         width: 250px;
       }
+      body {
+        background-color: #f5f5dc;
+      }
     </style>
   </head>
   <body>
@@ -23,10 +26,10 @@
       <div>
         <nav
           class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button"
-          style="height: 80px; color: #ffffff; background: #4d2422"
+          style="height: 80px; color: #ffffff; background: #4d3837"
         >
           <div class="container-fluid">
-            <a class="navbar-brand" href="#" style="color: #ffffff"
+            <a class="navbar-brand" href="/" style="color: #ffffff"
               >&nbsp;MineRush</a
             ><button
               data-bs-toggle="collapse"
@@ -41,7 +44,7 @@
                 <li class="nav-item">
                   <a
                     class="nav-link active"
-                    style="color: #ffffff"
+                    style="color: #ffffff; background-color: #4d3837"
                     href="/About"
                     >About</a
                   >
@@ -49,7 +52,7 @@
                 <li class="nav-item">
                   <a
                     class="nav-link active"
-                    style="color: #ffffff"
+                    style="color: #ffffff; background-color: #4d3837"
                     href="/Contactus"
                     >Contact us</a
                   >
@@ -113,7 +116,9 @@
       </form>
     </div>
     {% if error %}
-    <p style="color: red">{{ error }}</p>
+    <div class="alert alert-danger mt-3" role="alert">
+      <p style="color: red">{{ error }}</p>
+    </div>
     {% endif %}
   </body>
 </html>

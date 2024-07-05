@@ -20,6 +20,11 @@
         width: 150px;
         height: 50px;
       }
+      body{
+        background: linear-gradient(to right, #ffecd2 0%, #b5e4eb  100%);
+
+      }
+      
     </style>
   </head>
   <body>
@@ -28,7 +33,7 @@
       style="height: 80px; color: #ffffff; background: #4e3b3a"
     >
       <div class="container-fluid">
-        <a class="navbar-brand" href="#"
+        <a class="navbar-brand" href="/"
           ><span style="color: rgba(255, 255, 255, 0.9)"
             >&nbsp;MineRush</span
           ></a
@@ -46,12 +51,12 @@
             <li class="nav-item"></li>
             <li class="nav-item"></li>
             <li class="nav-item">
-              <a class="nav-link active" style="color: #ffffff" href="/About"
+              <a class="nav-link active" style="color: #ffffff;background-color: #4d3837;" href="/About"
                 >About</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link active" style="color: #ffffff" href="/Contactus"
+              <a class="nav-link active" style="color: #ffffff;background-color: #4d3837;" href="/Contactus"
                 >Contact us</a
               >
             </li>
@@ -74,7 +79,7 @@
           <button
             class="btn btn-primary btn-lg d-block btn-signin "
             type="submit"
-            style="background: rgb(227, 22, 22); width:400px"
+            style="background: rgb(167, 16, 16); width:400px"
             onclick="redirectToUserLogin()"
           >
              User Login
@@ -85,12 +90,12 @@
           <button
             class="btn btn-primary btn-lg d-block btn-signin w-100"
             type="submit"
-            style="background: rgb(227, 22, 22)"
+            style="background: rgb(167, 16, 16)"
             onclick="redirectToAdminLogin()"
           > Admin Login </button>
           <br>
           <p>Don't have an account?</p>
-          <button onclick="redirectToSignup()" style="background-color: red;color: #ffffff;">Sign-up</button>
+          <button onclick="redirectToSignup()" style="background-color: rgb(167, 16, 16);color: #ffffff;">Sign-up</button>
     <script>
         function redirectToAdminLogin() {
          
