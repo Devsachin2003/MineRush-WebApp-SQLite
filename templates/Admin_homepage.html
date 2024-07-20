@@ -21,6 +21,12 @@
     />
     <link rel="stylesheet" href="static/Admin_faqs_adminfont.css" />
     <link rel="stylesheet" href="static/Admin_dashboard.css" />
+    <style>
+      .scrollable-list {
+        max-height: 200px; /* Adjust the height as needed */
+        overflow-y: auto;
+      }
+    </style>
   </head>
   <body>
     <div>
@@ -29,14 +35,14 @@
         style="height: 80px; color: #ffffff; background: #4d3837"
       >
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">MineRush</a
-          ><button
+          <a class="navbar-brand" href="#">MineRush</a>
+          <button
             data-bs-toggle="collapse"
             class="navbar-toggler"
             data-bs-target="#navcol-1"
           >
-            <span class="visually-hidden">Toggle navigation</span
-            ><span class="navbar-toggler-icon"></span>
+            <span class="visually-hidden">Toggle navigation</span>
+            <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navcol-1">
             <ul class="navbar-nav ms-auto">
@@ -65,6 +71,62 @@
         </div>
       </nav>
     </div>
+
+    <!-- Notification Panel -->
+    <div class="container my-5">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <h5>Recently Registered Users</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush scrollable-list">
+                {% for user in users %}
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  {{ user[1] }}
+                  <a
+                    href="/view_user/{{ user[0] }}"
+                    class="btn btn-sm btn-primary"
+                    style="background-color: #b32c2c"
+                    >View</a
+                  >
+                </li>
+
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <h5>Recent Internship Applications</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush scrollable-list">
+                {% for application in applications %}
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  {{ application[1] }}
+                  <a
+                    href="/view_application/{{ application[0] }}"
+                    class="btn btn-sm btn-primary"
+                    style="background-color: #b32c2c"
+                    >View</a
+                  >
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div
       class="p-5 mb-4 bg-light round-3"
       style="background: url('static/img/internship-blog-winter.png')"

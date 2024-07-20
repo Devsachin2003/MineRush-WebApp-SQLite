@@ -104,6 +104,7 @@ def signup():
         gender = request.form['gender']
         phone = userdetails['phone']
         username =userdetails['username']
+        organization = userdetails['organization']
         pwd = userdetails['password']
         pwd1 = userdetails['confirmpassword']
         role = userdetails['role']
@@ -117,11 +118,11 @@ def signup():
             return render_template('Sign-up.html', error=error)
         else:
             cur = mysql.connection.cursor()
-            cur.execute("INSERT INTO userstable (name, email, gender, phone, username, password, confirmpassword, role) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
-                           (name, email, gender, phone, username, pwd, pwd1, role))
+            cur.execute("INSERT INTO userstable (name, email, gender, phone, username, password, confirmpassword, role, organization) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", 
+                           (name, email, gender, phone, username, pwd, pwd1, role, organization))
             mysql.connection.commit()
             cur.close()
-            return redirect(url_for("login_options"))
+            return redirect(url_for("login"))
     else:
         return render_template("Sign-up.html")
     
@@ -203,10 +204,15 @@ def contact_us():
 @app.route("/Admindashboard")
 def admindashboard():
     if 'loggedin' in session:
-        return render_template("Admin_homepage.html")
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT name, email FROM userstable")
+        users = cursor.fetchall()
+        cursor.execute("SELECT name, email FROM internship_applications")
+        applications = cursor.fetchall()
+        cursor.close()
+        return render_template("Admin_homepage.html",users=users,applications=applications)
     return redirect(url_for('Adminslogin'))
-#Userhomepage
-
+#Userhomepage    
 @app.route("/Userhomepage")
 def home():
     if 'loggedin' in session:

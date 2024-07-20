@@ -114,8 +114,21 @@
         >
           Log in
         </button>
+        <br />
+        <p>Don't have an account?</p>
+        <button
+          onclick="redirectToSignup()"
+          style="background-color: rgb(167, 16, 16); color: #ffffff"
+        >
+          Sign-up
+        </button>
       </form>
     </div>
+    <script>
+      function redirectToSignup() {
+        window.location.href = "/Register";
+      }
+    </script>
     {% with messages = get_flashed_messages() %} {% if messages %}
     <div class="alert alert-danger">
       <ul>

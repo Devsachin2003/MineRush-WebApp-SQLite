@@ -125,6 +125,21 @@
           <div class="row form-group">
             <div class="col-sm-4 label-column">
               <label class="col-form-label" for="name-input-field"
+                >Name of organization
+              </label>
+            </div>
+            <div class="col-sm-6 input-column">
+              <input
+                class="form-control"
+                type="text"
+                name="organization"
+                id="organization"
+              />
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-sm-4 label-column">
+              <label class="col-form-label" for="name-input-field"
                 >Username
               </label>
             </div>
@@ -193,6 +208,15 @@
           >
             Sign-up
           </button>
+          {% with messages = get_flashed_messages() %} {% if messages %}
+          <div class="alert alert-danger">
+            <ul>
+              {% for message in messages %}
+              <li>{{message}}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %} {% endwith %}
         </form>
       </div>
     </div>
