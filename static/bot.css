@@ -1,0 +1,137 @@
+.chat-container {
+  width: 100%;
+
+  background-color: #f6e1e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.chat-header {
+  background-color: #854642;
+  color: #e9ecef;
+  padding: 20px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 500;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.chat-messages {
+  padding: 20px;
+  height: calc(100% - 150px); /* Adjust height for the textarea */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.chat-input {
+  display: flex;
+  border-top: 1px solid #ddd;
+  padding: 10px;
+  background-color: #f7f7f8;
+  align-items: flex-end;
+}
+
+.chat-input textarea {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: #e9ecef;
+  font-size: 16px;
+  resize: none; /* Disable manual resizing */
+  overflow: hidden;
+  min-height: 40px; /* Minimum height */
+  max-height: 150px; /* Maximum height */
+  line-height: 1.5;
+}
+
+.chat-input button {
+  background-color: #912121;
+  color: white;
+  padding: 12px 15px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.chat-input button:hover {
+  background-color: #912121;
+}
+
+.user-message,
+.bot-message {
+  padding: 12px 18px;
+  border-radius: 12px;
+  max-width: 75%;
+  font-size: 16px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.user-message {
+  background-color: #912121;
+  color: white;
+  align-self: flex-end;
+}
+
+.bot-message {
+  background-color: #f1f1f1;
+  color: #333;
+  align-self: flex-start;
+}
+
+.loading {
+  font-size: 12px;
+  color: #aaa;
+  align-self: flex-start;
+}
+
+.chat-messages {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f7f7f8;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d1d1d1;
+  border-radius: 10px;
+}
+
+pre,
+code {
+  background-color: #eee;
+  padding: 8px;
+  border-radius: 5px;
+  display: block;
+  white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+}
+
+ul {
+  padding-left: 20px;
+}

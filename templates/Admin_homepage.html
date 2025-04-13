@@ -50,14 +50,17 @@
                 <a
                   class="nav-link"
                   style="color: #ffffff"
-                  href="/Admin_dashboard"
+                  href="/Admindashboard"
                   ><i class="fa fa-home"></i>&nbsp;Home</a
                 >
               </li>
               <li class="nav-item"></li>
               <li class="nav-item"></li>
               <li class="nav-item">
-                <a class="nav-link" style="color: #ffffff" href="#"
+                <a
+                  class="nav-link"
+                  style="color: #ffffff"
+                  href="/Adminmyprofile"
                   ><i class="fa fa-user-circle"></i>Myprofile</a
                 >
               </li>
@@ -88,7 +91,7 @@
                 >
                   {{ user[1] }}
                   <a
-                    href="/view_user/{{ user[0] }}"
+                    href="/View_recent_registered_user/{{ user[0] }}"
                     class="btn btn-sm btn-primary"
                     style="background-color: #b32c2c"
                     >View</a
@@ -113,7 +116,7 @@
                 >
                   {{ application[1] }}
                   <a
-                    href="/view_application/{{ application[0] }}"
+                    href="/View_recent_intern_applicant/{{application[0]}}"
                     class="btn btn-sm btn-primary"
                     style="background-color: #b32c2c"
                     >View</a

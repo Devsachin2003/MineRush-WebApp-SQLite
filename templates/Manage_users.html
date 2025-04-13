@@ -142,13 +142,6 @@
                       >
                         <i class="fa fa-trash"></i>
                       </button>
-                      <button
-                        type="button"
-                        class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"
-                        onclick="View_user_detailsD('{{ user.email }}')"
-                      >
-                        <i class="fa fa-edit"></i>
-                      </button>
                     </td>
                   </tr>
                   {% endfor %}
@@ -218,15 +211,26 @@
           document.getElementById("deleteModal")
         );
         deleteModal.show();
-        // Store the email in a hidden input or global variable to use it later when confirming the deletion
         document.getElementById("deleteUserId").value = email;
       }
 
       function deleteUser() {
         var email = document.getElementById("deleteUserId").value;
-        // Perform delete operation using AJAX or form submission
-        console.log("Deleting user with email: " + email);
-        // Close the modal after deletion
+
+        fetch("/delete_user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email }),
+        })
+          .then((response) => response.text())
+          .then((data) => {
+            alert(data);
+            location.reload();
+          })
+          .catch((error) => console.error("Error:", error));
+
         var deleteModal = bootstrap.Modal.getInstance(
           document.getElementById("deleteModal")
         );

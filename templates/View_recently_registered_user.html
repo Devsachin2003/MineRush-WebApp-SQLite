@@ -41,14 +41,17 @@
         <div class="collapse navbar-collapse" id="navcol-1">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link active" style="color: #ffffff" href="#"
+              <a
+                class="nav-link active"
+                style="color: #ffffff"
+                href="/Admindashboard"
                 ><i class="fa fa-home"></i>&nbsp;Home</a
               >
             </li>
             <li class="nav-item"></li>
             <li class="nav-item"></li>
             <li class="nav-item">
-              <a class="nav-link active" style="color: #ffffff" href="#"
+              <a class="nav-link active" style="color: #ffffff" href="/Alogout"
                 ><i class="fas fa-sign-out-alt"></i>Logout</a
               >
             </li>
@@ -79,7 +82,7 @@
             <div class="card clean-card text-center">
               <img
                 class="card-img-top w-100 d-block"
-                src="assets/img/logoComedor/avatar1.jpg"
+                src="static/Articles/rules and acts/{{ user.picture }}"
               />
               <div class="card-body info">
                 <div class="row" style="margin-top: -24px">
@@ -88,31 +91,39 @@
                       <div class="col">
                         <p class="labels"><strong>Name</strong></p>
                       </div>
-                      <div class="col"><p class="labels">usuarioPrueba</p></div>
+                      <div class="col"><p class="labels">{{user.name}}</p></div>
                     </div>
                     <div class="row">
                       <div class="col">
                         <p class="labels"><strong>Username</strong></p>
                       </div>
-                      <div class="col"><p class="labels">6622971893</p></div>
+                      <div class="col">
+                        <p class="labels">{{user.username}}</p>
+                      </div>
                     </div>
                     <div class="row">
                       <div class="col">
                         <p class="labels"><strong>Gender</strong></p>
                       </div>
-                      <div class="col"><p class="labels">México</p></div>
+                      <div class="col">
+                        <p class="labels">{{user.gender}}</p>
+                      </div>
                     </div>
                     <div class="row">
                       <div class="col">
                         <p class="labels"><strong>Phone</strong></p>
                       </div>
-                      <div class="col"><p class="labels">Sonora</p></div>
+                      <div class="col">
+                        <p class="labels">{{user.phone}}</p>
+                      </div>
                     </div>
                     <div class="row">
                       <div class="col">
                         <p class="labels"><strong>Email</strong></p>
                       </div>
-                      <div class="col"><p class="labels">Hermosillo</p></div>
+                      <div class="col">
+                        <p class="labels">{{user.email}}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -122,13 +133,15 @@
                       <div class="col">
                         <p class="labels"><strong>Organization</strong></p>
                       </div>
-                      <div class="col"><p class="labels">usuarioPrueba</p></div>
+                      <div class="col">
+                        <p class="labels">{{user.organization}}</p>
+                      </div>
                     </div>
                     <div class="row">
                       <div class="col">
                         <p class="labels"><strong>Role</strong></p>
                       </div>
-                      <div class="col"><p class="labels">6622971893</p></div>
+                      <div class="col"><p class="labels">{{user.role}}</p></div>
                     </div>
                   </div>
                 </div>
