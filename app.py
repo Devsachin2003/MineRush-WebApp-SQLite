@@ -4,7 +4,6 @@ import json
 import os
 from flask_mail import Mail,Message
 from werkzeug.utils import secure_filename
-from fetch_data_from_interndb import get_company_email_by_application_id
 from dotenv import load_dotenv
 
 import google.generativeai as genai
