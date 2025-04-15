@@ -2,12 +2,24 @@ from flask import Flask, redirect, url_for, render_template, request, session, f
 import sqlite3
 import json
 import os
+from flask_mail import Mail,Message
 from werkzeug.utils import secure_filename
+from fetch_data_from_interndb import get_company_email_by_application_id
+from dotenv import load_dotenv
 
 import google.generativeai as genai
-
+load_dotenv()
 app = Flask(__name__)
 app.secret_key = "super secret key"
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')  # Get email from environment variable
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # Get password from environment variable
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')  # Default sender email
+
+mail = Mail(app)
 
 # SQLite database path
 DB_PATH = 'users.db'
@@ -279,8 +291,11 @@ def view_profile(name):
         conn.close()
         
         if user:
+            # Normalize the picture filename and make sure it's passed correctly
+            picture_filename = user['picture'].replace('\\', '/').strip()
+
             user_data = {
-                'picture': user['picture'],
+                'picture': picture_filename,
                 'name': user['name'],
                 'username': user['username'],
                 'gender': user['gender'],
@@ -289,17 +304,34 @@ def view_profile(name):
                 'organization': user['organization'],
                 'role': user['role']
             }
+
+            print("DEBUG: Picture filename = ", picture_filename)  # Optional debug
+
             return render_template('View_recently_registered_user.html', user=user_data)
         else:
             return "User not found", 404
     return redirect(url_for('Userslogin'))
 
+
 # User homepage
 @app.route("/Userhomepage")
 def home():
     if 'loggedin' in session:
-        return render_template("User_homepage.html")
+        email = session['email']
+        conn = get_db_connection()
+        intern = conn.execute("SELECT * FROM internship_applications WHERE email = ?", (email,)).fetchone()
+        conn.close()
+
+        if intern:
+            status = intern['status']
+            name = intern['name']
+            return render_template("User_homepage.html", name=name, status=status)
+        else:
+            # No application found yet
+            return render_template("User_homepage.html", name=session.get('name'), status="No application submitted")
+
     return redirect(url_for('Userslogin'))
+
 
 # User instructions page
 @app.route("/User_instructions")
@@ -424,7 +456,7 @@ def Rulesandacts():
     else:
         return redirect(url_for('Userslogin'))
 
-@app.route("/Manage_users")
+@app.route("/Manage_users", methods=['GET'])
 def manage():
     if 'loggedin' in session:
         conn = get_db_connection()
@@ -468,11 +500,11 @@ def delete_user():
 def view_intern(name):
     if 'loggedin' in session:
         conn = get_db_connection()
-        intern = conn.execute("SELECT * FROM internship_applications WHERE name = ?", (name,)).fetchone()
+        intern = conn.execute("SELECT * FROM internship_applications WHERE name = ? AND status = 'Pending'", (name,)).fetchone()
         conn.close()
 
         if not intern:
-            return "Details not found", 404
+            return "This application is either not found or already processed.", 404
 
         intern_data = {
             'name': intern['name'],
@@ -488,11 +520,28 @@ def view_intern(name):
             'year_of_study': intern['year_of_study'],
             'skills': intern['skills'],
             'internship_role': intern['internship_role'],
-            'resume': intern['resume']
+            'resume': intern['resume'],
+            'status': intern['status']
         }
         return render_template('View_recent_intern_application.html', intern=intern_data)
     return redirect(url_for('Userslogin'))
 
+
+@app.route('/approve/<string:name>')
+def approve(name):
+    conn = get_db_connection()
+    conn.execute("UPDATE internship_applications SET status = 'Approved' WHERE name = ?", (name,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('admindashboard'))
+
+@app.route('/cancel/<string:name>')
+def cancel(name):
+    conn = get_db_connection()
+    conn.execute("UPDATE internship_applications SET status = 'Cancelled' WHERE name = ?", (name,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('admindashboard'))
 
 @app.route("/Update_glossary")
 def update_glossary():
@@ -548,31 +597,50 @@ def openfaqs():
         return redirect(url_for('Userslogin'))
 
 def update_user_details(email, name, username, role, gender, picture):
-    conn = get_db_connection()
+    conn = sqlite3.connect('users.db')  # Use correct DB
     try:
-        sql = """
+        cursor = conn.cursor()
+
+        # ✅ Add this check
+        cursor.execute("PRAGMA table_info(userstable)")
+        columns = [col[1] for col in cursor.fetchall()]
+        if 'picture' not in columns:
+            cursor.execute("ALTER TABLE userstable ADD COLUMN picture TEXT")
+
+        cursor.execute("""
             UPDATE userstable
             SET name = ?, username = ?, role = ?, gender = ?, picture = ?
             WHERE email = ?
-        """
-        conn.execute(sql, (name, username, role, gender, picture, email))
+        """, (name, username, role, gender, picture, email))
+
         conn.commit()
     finally:
         conn.close()
 
 
+
 def update_admin_details(email, name, username, role, gender, picture):
-    conn = get_db_connection()
+    conn = sqlite3.connect('users.db')
     try:
+        cursor = conn.cursor()
+
+        # ✅ Check if 'picture' column exists
+        cursor.execute("PRAGMA table_info(admintable)")
+        columns = [col[1] for col in cursor.fetchall()]
+        if 'picture' not in columns:
+            cursor.execute("ALTER TABLE admintable ADD COLUMN picture TEXT")
+
+        # ✅ Proceed with the update
         sql = """
             UPDATE admintable
             SET name = ?, username = ?, role = ?, gender = ?, picture = ?
             WHERE email = ?
         """
-        conn.execute(sql, (name, username, role, gender, picture, email))
+        cursor.execute(sql, (name, username, role, gender, picture, email))
         conn.commit()
     finally:
         conn.close()
+
 
 
 def get_user_details(email):
@@ -615,10 +683,7 @@ def edit_user_profile():
             picture_file.save(picture_path)
         else:
             existing_user = get_user_details(session['email'])
-            if existing_user and 'picture' in existing_user.keys():
-                picture_filename = existing_user['picture']
-            else:
-                picture_filename = None
+            picture_filename = existing_user.get('picture') if existing_user else None
 
         update_user_details(session['email'], name, username, role, gender, picture_filename)
         return redirect(url_for('profile'))
@@ -629,27 +694,35 @@ def edit_user_profile():
 
 @app.route("/Admineditprofile", methods=['GET', 'POST'])
 def edit_admin_profile():
-    if 'loggedin' in session:
-        if request.method == 'POST':
-            name = request.form['name']
-            username = request.form['username']
-            role = request.form['role']
-            gender = request.form['gender']
-
-            picture_file = request.files.get('picture')
-            if picture_file and allowed_file(picture_file.filename):
-                picture_filename = secure_filename(picture_file.filename)
-                picture_file.save(os.path.join(app.config['UPLOAD_FOLDER'], picture_filename))
-            else:
-                picture_filename = None
-
-            update_admin_details(session['email'], name, username, role, gender, picture_filename)
-            return redirect(url_for('profile'))
-
-        admin = get_admin_details(session['email'])
-        return render_template('Admin_editprofile.html', admin=admin)
-    else:
+    if 'loggedin' not in session:
         return redirect(url_for("user_login"))
+
+    if request.method == 'POST':
+        name = request.form['name']
+        username = request.form['username']
+        role = request.form['role']
+        gender = request.form['gender']
+
+        picture_file = request.files.get('picture')
+        picture_filename = None
+
+        if picture_file and allowed_file(picture_file.filename):
+            picture_filename = secure_filename(picture_file.filename)
+            picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_filename)
+            picture_file.save(picture_path)
+        else:
+            # If picture not uploaded, retain the existing one
+            existing_admin = get_admin_details(session['email'])
+            picture_filename = existing_admin.get('picture') if existing_admin and 'picture' in existing_admin else None
+
+        # ✅ Safe update with column check inside this function
+        update_admin_details(session['email'], name, username, role, gender, picture_filename)
+        return redirect(url_for('profile'))
+
+    admin = get_admin_details(session['email'])
+    return render_template('Admin_editprofile.html', admin=admin)
+
+
 
 
 @app.route("/Upload_files", methods=['GET', 'POST'])

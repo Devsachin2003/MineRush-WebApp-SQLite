@@ -82,8 +82,9 @@
             <div class="card clean-card text-center">
               <img
                 class="card-img-top w-100 d-block"
-                src="static/Articles/rules and acts/{{ user.picture }}"
+                src="{{ url_for('static', filename='Articles/rules and acts/' + user.picture) }}"
               />
+
               <div class="card-body info">
                 <div class="row" style="margin-top: -24px">
                   <div class="col-md-12" style="margin-top: 22px">

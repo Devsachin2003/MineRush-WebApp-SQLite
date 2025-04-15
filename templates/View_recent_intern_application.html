@@ -164,19 +164,8 @@
 
                     <div class="row">
                       <div class="col-md-12" style="margin-top: 57px">
-                        <a
-                          class="btn btn-success"
-                          role="button"
-                          href="editProfile.html"
-                          style="background: rgb(173, 36, 36)"
-                          ><strong>APPROVE</strong></a
-                        ><a
-                          class="btn btn-success"
-                          role="button"
-                          href="editProfile.html"
-                          style="background: rgb(141, 152, 163)"
-                          ><strong>CANCEL</strong></a
-                        >
+                        <a class="btn btn-success" role="button" href="/approve/{{ intern.name }}" style="background: green;"><strong>APPROVE</strong></a>
+                        <a class="btn btn-danger" role="button" href="/cancel/{{ intern.name }}" style="background: grey;"><strong>CANCEL</strong></a>
                       </div>
                     </div>
                   </div>
