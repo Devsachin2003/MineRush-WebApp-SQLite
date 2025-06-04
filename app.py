@@ -5,6 +5,8 @@ import os
 from flask_mail import Mail,Message
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
+import webbrowser
+from urllib.parse import quote
 
 import google.generativeai as genai
 load_dotenv()
@@ -261,10 +263,17 @@ def admindashboard():
     if 'loggedin' in session:
         conn = get_db_connection()
         users = conn.execute("SELECT name, email FROM userstable").fetchall()
-        applications = conn.execute("SELECT name, email FROM internship_applications").fetchall()
+
+        # ✅ Fetch only non-approved applications
+        applications = conn.execute(
+            "SELECT name, email FROM internship_applications WHERE status IS NULL OR status != 'Approved'"
+        ).fetchall()
+
         conn.close()
         return render_template("Admin_homepage.html", users=users, applications=applications)
+    
     return redirect(url_for('Userslogin'))
+
 
 # Admin profile
 @app.route('/Adminmyprofile')
@@ -382,6 +391,7 @@ def submit_application():
         degree_branch = request.form['degree_branch']
         year_of_study = request.form['year_of_study']
         company_name = request.form['company_name']
+        company_email = request.form['company_email']
         skills = request.form['skills']
         internship_role = request.form['internship_role']
         
@@ -404,12 +414,12 @@ def submit_application():
             try:
                 conn = get_db_connection()
                 query = """INSERT INTO internship_applications 
-                           (name, gender, dob, phone, email, address, degree_branch, year_of_study, company_name, skills, internship_role, resume) 
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+                           (name, gender, dob, phone, email, address, degree_branch, year_of_study, company_name, company_email, skills, internship_role, resume) 
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
                 conn.execute(query, (
                     name, gender, dob, phone, email, address,
-                    degree_branch, year_of_study, company_name, skills,
-                    internship_role, filename
+                    degree_branch, year_of_study, company_name,
+                    company_email, skills, internship_role, filename
                 ))
                 conn.commit()
                 conn.close()
@@ -422,7 +432,8 @@ def submit_application():
         else:
             flash('Only PDF files are allowed', 'danger')
             return redirect(request.url)
-    
+
+    # fallback for GET
     return '''
     <form method="post" enctype="multipart/form-data">
         <input type="text" name="name" placeholder="Name">
@@ -434,12 +445,14 @@ def submit_application():
         <input type="text" name="degree_branch" placeholder="Degree Branch">
         <input type="text" name="year_of_study" placeholder="Year of Study">
         <input type="text" name="company_name" placeholder="Company Name">
+        <input type="text" name="company_email" placeholder="Company Email">
         <input type="text" name="skills" placeholder="Skills">
         <input type="text" name="internship_role" placeholder="Internship Role">
         <input type="file" name="resume">
         <input type="submit" value="Submit">
     </form>
     '''
+
 
 @app.route("/Disclaimer")
 def Disclaimer():
@@ -529,10 +542,46 @@ def view_intern(name):
 @app.route('/approve/<string:name>')
 def approve(name):
     conn = get_db_connection()
-    conn.execute("UPDATE internship_applications SET status = 'Approved' WHERE name = ?", (name,))
-    conn.commit()
+    intern = conn.execute("SELECT * FROM internship_applications WHERE name = ?", (name,)).fetchone()
+
+    if intern:
+        # Update status
+        conn.execute("UPDATE internship_applications SET status = 'Approved' WHERE name = ?", (name,))
+        conn.commit()
+        conn.close()
+
+        # Prepare email content
+        company_email = intern['company_email']
+        applicant_name = intern['name']
+        applicant_email = intern['email']
+        internship_role = intern['internship_role']
+        company_name = intern['company_name']
+
+        subject = f"Internship Approval - {applicant_name}"
+        body = f"""Dear {company_name},
+
+This is to inform you that the applicant {applicant_name} has been reviewed and is eligible to do an internship in your company for the role of {internship_role}.
+
+Kindly revert your thoughts to {applicant_email} at the earliest.
+
+Regards,
+[Your Name]
+[Institution Name]"""
+
+        # Gmail compose link
+        gmail_url = (
+            "https://mail.google.com/mail/?view=cm"
+            f"&to={quote(company_email)}"
+            f"&su={quote(subject)}"
+            f"&body={quote(body)}"
+        )
+
+        # Redirect to Gmail draft
+        return redirect(gmail_url)
+
+    # If applicant not found
     conn.close()
-    return redirect(url_for('admindashboard'))
+    return "Application not found", 404
 
 @app.route('/cancel/<string:name>')
 def cancel(name):
