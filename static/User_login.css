@@ -1,0 +1,52 @@
+body {
+  background: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar {
+  background-color: #4e3b3a;
+}
+
+.navbar-brand,
+.nav-link {
+  color: #ffffff !important;
+}
+
+.login-card {
+  max-width: 400px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.profile-img-card {
+  margin: 20px 0;
+  height: 150px;
+  width: 150px;
+}
+
+.profile-name-card {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.form-control {
+  margin-bottom: 20px;
+}
+
+.btn-signin {
+  background: rgb(167, 16, 16);
+  color: #ffffff;
+}
+
+.alert {
+  max-width: 400px;
+  margin: 20px auto;
+}

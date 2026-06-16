@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+    />
+    <title>FAQs userside</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto&amp;display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="static/FAQs_user.css" />
+  </head>
+  <body>
+    <nav
+      class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button"
+      style="height: 80px; color: #ffffff; background: #4d3837"
+    >
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#"
+          ><span
+            style="
+              font-weight: normal !important;
+              color: rgba(255, 255, 255, 0.9);
+            "
+            >MineRush</span
+          ></a
+        >
+        <button
+          data-bs-toggle="collapse"
+          class="navbar-toggler"
+          data-bs-target="#navcol-1"
+        >
+          <span class="visually-hidden">Toggle navigation</span
+          ><span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navcol-1">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                style="color: #ffffff; background-color: #4d3837"
+                href="/Userhomepage"
+                ><i class="fa fa-home"></i>&nbsp;Home</a
+              >
+            </li>
+            <li class="nav-item"></li>
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                style="color: #ffffff; background-color: #4d3837"
+                href="/Myprofile"
+                ><i class="fa fa-user-circle-o"></i>&nbsp;MyProfile</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                style="color: #ffffff; background-color: #4d3837"
+                href="/logout"
+                ><i class="fa fa-sign-out" style="font-size: 17px"></i>Logout</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div
+      class="bg-light border rounded border-light hero-technology jumbotron py-5 px-4"
+      style="background: url('static/img/questions-background.jpg')"
+    >
+      <h1 class="hero-title" style="font-family: Roboto, sans-serif">
+        Frequently asked questions
+      </h1>
+      <p class="hero-subtitle">
+        <br />Welcome to our FAQ section! Here you'll find answers to the most
+        common questions about MineRush. We've organized the information to help
+        you quickly find what you need. To explore more queries, simply scroll
+        down and click on the relevant subheadings. If you can't find the answer
+        you're looking for, feel free to contact our support team.<br /><br />
+      </p>
+      <p></p>
+    </div>
+    <section class="py-5 bg-light" style="background: rgb(255, 255, 255)">
+      {% for section_index, (section, faqs) in enumerate(faqs.items()) %}
+      <h1
+        class="text-center text-success"
+        style="
+          padding-top: 15px;
+          padding-bottom: 15px;
+          color: #1b6ce5 !important;
+          font-family: Roboto, sans-serif;
+        "
+      >
+        <span style="color: rgb(156, 31, 31)">{{ section }}</span>
+      </h1>
+      <div class="container">
+        <div
+          class="row"
+          style="
+            background: linear-gradient(
+              -18deg,
+              black,
+              rgb(200, 200, 200) 78%,
+              white
+            );
+          "
+        >
+          <div class="col-md-6 offset-md-3">
+            <div id="accordion-{{ section_index }}" class="accordion">
+              {% for faq_index, faq in enumerate(faqs) %}
+              <div class="accordion-item">
+                <h2
+                  class="accordion-header"
+                  id="heading-{{ section_index }}-{{ faq_index }}"
+                >
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapse-{{ section_index }}-{{ faq_index }}"
+                    aria-expanded="false"
+                    aria-controls="collapse-{{ section_index }}-{{ faq_index }}"
+                  >
+                    {{ faq.question }}
+                  </button>
+                </h2>
+                <div
+                  id="collapse-{{ section_index }}-{{ faq_index }}"
+                  class="accordion-collapse collapse"
+                  aria-labelledby="heading-{{ section_index }}-{{ faq_index }}"
+                  data-bs-parent="#accordion-{{ section_index }}"
+                >
+                  <div class="accordion-body">{{ faq.answer }}</div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/FAQs_user.js"></script>
+  </body>
+</html>

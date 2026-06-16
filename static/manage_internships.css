@@ -1,0 +1,41 @@
+.bill-header {
+  font-size: 12px;
+  text-align: center;
+}
+.form-control:focus {
+  border-color: #25476a;
+  outline: 0;
+  box-shadow: none;
+}
+#trs-hd,
+.warning.no-result {
+  text-align: center;
+}
+.bill-header.cs {
+  background-color: rgba(37, 71, 106, 0.56);
+  color: #fff;
+}
+.fa.fa-warning {
+  font-size: 18px;
+  color: red;
+}
+.search.form-control {
+  border-radius: 0 !important;
+}
+.search-table-col {
+  margin-top: 100px;
+}
+body {
+  padding: 20px;
+}
+.no-result,
+.results tr[visible="false"] {
+  display: none;
+}
+.results tr[visible="true"] {
+  display: table-row;
+}
+.counter {
+  padding: 8px;
+  color: #ccc;
+}
