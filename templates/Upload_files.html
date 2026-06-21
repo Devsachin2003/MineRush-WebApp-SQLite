@@ -41,7 +41,7 @@
         style="height: 80px; color: #ffffff; background: #4d3837"
       >
         <div class="container-fluid">
-          <a class="navbar-brand" href="#"
+          <a class="navbar-brand" href="{{ url_for('admindashboard') if session.get('responsibility') == 'admin' else (url_for('home') if session.get('loggedin') else url_for('welcome')) }}"
             ><span style="font-weight: normal !important">MineRush</span></a
           >
           <button
@@ -58,13 +58,13 @@
                 <a
                   class="nav-link"
                   style="color: #ffffff"
-                  href="/Admin_dashboard"
+                  href="{{ url_for('admindashboard') }}"
                 >
                   <i class="fa fa-home"></i>&nbsp;Home
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" style="color: #ffffff" href="#">
+                <a class="nav-link active" style="color: #ffffff" href="{{ url_for('adminprofile') if session.get('responsibility') == 'admin' else url_for('profile') }}">
                   <i class="fa fa-user-circle"></i>&nbsp;MyProfile
                 </a>
               </li>

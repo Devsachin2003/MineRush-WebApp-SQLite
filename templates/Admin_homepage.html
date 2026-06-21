@@ -1,241 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-    />
-    <title>Adminhomepage</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.12.0/css/all.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <link rel="stylesheet" href="static/Admin_faqs_adminfont.css" />
-    <link rel="stylesheet" href="static/Admin_dashboard.css" />
-    <style>
-      .scrollable-list {
-        max-height: 200px; /* Adjust the height as needed */
-        overflow-y: auto;
-      }
-    </style>
-  </head>
-  <body>
-    <div>
-      <nav
-        class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button"
-        style="height: 80px; color: #ffffff; background: #4d3837"
-      >
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">MineRush</a>
-          <button
-            data-bs-toggle="collapse"
-            class="navbar-toggler"
-            data-bs-target="#navcol-1"
-          >
-            <span class="visually-hidden">Toggle navigation</span>
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navcol-1">
-            <ul class="navbar-nav ms-auto">
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  style="color: #ffffff"
-                  href="/Admindashboard"
-                  ><i class="fa fa-home"></i>&nbsp;Home</a
-                >
-              </li>
-              <li class="nav-item"></li>
-              <li class="nav-item"></li>
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  style="color: #ffffff"
-                  href="/Adminmyprofile"
-                  ><i class="fa fa-user-circle"></i>Myprofile</a
-                >
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" style="color: #ffffff" href="/Alogout"
-                  ><i class="fas fa-sign-out-alt"></i>Logout</a
-                >
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+{% extends "base_modern.html" %}
+{% block title %}Admin Dashboard | MineRush{% endblock %}
+{% block content %}
+<section class="page-shell">
+  <div class="container">
+    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-4">
+      <div>
+        <p class="eyebrow mb-1">Admin workspace</p>
+        <h1 class="page-title mb-2">Dashboard</h1>
+        <p class="text-secondary mb-0">Manage users, internship applications, rules, FAQs, and glossary content.</p>
+      </div>
+      <a class="btn btn-primary align-self-start" href="{{ url_for('add_intern') }}">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Internship
+      </a>
     </div>
 
-    <!-- Notification Panel -->
-    <div class="container my-5">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              <h5>Recently Registered Users</h5>
-            </div>
-            <div class="card-body">
-              <ul class="list-group list-group-flush scrollable-list">
-                {% for user in users %}
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  {{ user[1] }}
-                  <a
-                    href="/View_recent_registered_user/{{ user[0] }}"
-                    class="btn btn-sm btn-primary"
-                    style="background-color: #b32c2c"
-                    >View</a
-                  >
-                </li>
-
-                {% endfor %}
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              <h5>Recent Internship Applications</h5>
-            </div>
-            <div class="card-body">
-              <ul class="list-group list-group-flush scrollable-list">
-                {% for application in applications %}
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  {{ application[1] }}
-                  <a
-                    href="/View_recent_intern_applicant/{{application[0]}}"
-                    class="btn btn-sm btn-primary"
-                    style="background-color: #b32c2c"
-                    >View</a
-                  >
-                </li>
-                {% endfor %}
-              </ul>
-            </div>
-          </div>
-        </div>
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <article class="metric-card p-3">
+          <p class="eyebrow mb-1">Registered users</p>
+          <p class="display-6 fw-bold mb-0">{{ users|length }}</p>
+        </article>
+      </div>
+      <div class="col-md-6">
+        <article class="metric-card p-3">
+          <p class="eyebrow mb-1">Open applications</p>
+          <p class="display-6 fw-bold mb-0">{{ applications|length }}</p>
+        </article>
       </div>
     </div>
 
-    <div
-      class="p-5 mb-4 bg-light round-3"
-      style="background: url('static/img/internship-blog-winter.png')"
-    >
-      <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Add Internships</h1>
-        <p class="col-md-8 fs-4">"Adding available coal mining internships."</p>
-        <a
-          class="btn btn-primary btn-lg"
-          role="button"
-          href="/Add_internship"
-          style="background: rgb(166, 26, 26)"
-          >Click here</a
-        >
+    <div class="row g-4 mb-4">
+      <div class="col-lg-6">
+        <section class="surface p-3 h-100" aria-labelledby="recentUsersTitle">
+          <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+            <h2 class="h5 mb-0" id="recentUsersTitle">Recently Registered Users</h2>
+            <span class="badge text-bg-light">{{ users|length }}</span>
+          </div>
+          <div class="list-group list-group-flush overflow-auto" style="max-height: 18rem;">
+            {% for user in users %}
+              <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-3" href="{{ url_for('view_profile', name=user.name) }}">
+                <span class="text-truncate">{{ user.email }}</span>
+                <span class="btn btn-sm btn-outline-primary">View</span>
+              </a>
+            {% else %}
+              <p class="text-secondary mb-0">No users are available yet.</p>
+            {% endfor %}
+          </div>
+        </section>
+      </div>
+      <div class="col-lg-6">
+        <section class="surface p-3 h-100" aria-labelledby="recentApplicationsTitle">
+          <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+            <h2 class="h5 mb-0" id="recentApplicationsTitle">Recent Internship Applications</h2>
+            <span class="badge text-bg-light">{{ applications|length }}</span>
+          </div>
+          <div class="list-group list-group-flush overflow-auto" style="max-height: 18rem;">
+            {% for application in applications %}
+              <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-3" href="{{ url_for('view_intern', name=application.name) }}">
+                <span class="text-truncate">{{ application.email }}</span>
+                <span class="btn btn-sm btn-outline-primary">Review</span>
+              </a>
+            {% else %}
+              <p class="text-secondary mb-0">No applications need review.</p>
+            {% endfor %}
+          </div>
+        </section>
       </div>
     </div>
-    <div
-      class="p-5 mb-4 bg-light round-3"
-      style="
-        background: url('static/img/98317747-data-transfer-copying-uploading-process-file-sharing-or-sending-documents-from-one-file-folder-to.jpg')
-          no-repeat;
-        background-size: cover;
-      "
-    >
-      <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Upload files</h1>
-        <p class="col-md-8 fs-4">"Upload files easily."</p>
-        <a
-          class="btn btn-primary btn-lg"
-          role="button"
-          href="/Upload_files"
-          style="background: rgb(166, 26, 26)"
-          >Click here</a
-        >
-      </div>
+
+    <div class="row g-3">
+      {% set actions = [
+        ("Add Internships", "Publish available mining internship opportunities.", "fa-briefcase", url_for('add_intern')),
+        ("Manage Internships", "Search and audit internship listings.", "fa-list-check", url_for('manage_internships')),
+        ("Upload Files", "Attach rules, acts, PDFs, images, and videos.", "fa-file-arrow-up", url_for('upload_file')),
+        ("Add FAQs", "Maintain common questions for users.", "fa-circle-question", url_for('add_faqs_admin')),
+        ("Update Glossary", "Add definitions for mining and legal terms.", "fa-book", url_for('update_glossary')),
+        ("Manage Users", "Review and remove user accounts.", "fa-users-gear", url_for('manage'))
+      ] %}
+      {% for title, text, icon, href in actions %}
+        <div class="col-sm-6 col-xl-4">
+          <article class="action-card">
+            <span class="action-card__icon"><i class="fa-solid {{ icon }}" aria-hidden="true"></i></span>
+            <h2 class="h5 mb-0">{{ title }}</h2>
+            <p class="text-secondary flex-grow-1 mb-0">{{ text }}</p>
+            <a class="btn btn-outline-primary align-self-start" href="{{ href }}">Open</a>
+          </article>
+        </div>
+      {% endfor %}
     </div>
-    <div
-      class="p-5 mb-4 bg-light round-3"
-      style="
-        background: url('static/img/faqs.jpg') no-repeat;
-        background-size: cover;
-      "
-    >
-      <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Add FAQs</h1>
-        <p class="col-md-8 fs-4">"Add FAQs for easy reference."</p>
-        <a
-          class="btn btn-primary btn-lg"
-          role="button"
-          href="/Add_faqs_admin"
-          style="background: rgb(166, 26, 26)"
-          >Click here</a
-        >
-      </div>
-    </div>
-    <div
-      class="p-5 mb-4 bg-light round-3"
-      style="
-        background: url('static/img/open-old-dictionary-book-tvopkmk0443xf37c.jpg')
-          center / cover no-repeat;
-      "
-    >
-      <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">
-          <span style="color: rgb(0, 0, 0)">Update Glossary</span>
-        </h1>
-        <p class="col-md-8 fs-4">
-          <br /><span style="color: rgb(0, 0, 0)"
-            >"Easily refine your content with seamless updates".</span
-          >
-        </p>
-        <a
-          class="btn btn-primary btn-lg"
-          role="button"
-          href="/Update_glossary"
-          style="background: rgb(166, 26, 26)"
-          >Click here</a
-        >
-      </div>
-    </div>
-    <div
-      class="p-5 mb-4 bg-light round-3"
-      style="
-        background: url('static/img/The expansion of cloud applications has added to....png')
-          no-repeat;
-        background-size: cover;
-      "
-    >
-      <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">
-          <span style="color: rgb(255, 255, 255)">Manage users</span>
-        </h1>
-        <p class="col-md-8 fs-4">
-          <span style="color: rgb(255, 255, 255)"
-            >"Efficiently handle user management."</span
-          >
-        </p>
-        <a
-          class="btn btn-primary btn-lg"
-          role="button"
-          href="/Manage_users"
-          style="background: rgb(166, 26, 26)"
-          >Click here</a
-        >
-      </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>{% block title %}MineRush{% endblock %}</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='app-modern.css') }}" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body class="{% block body_class %}{% endblock %}">
+    {% set current_endpoint = request.endpoint or '' %}
+    {% set is_admin = session.get('responsibility') == 'admin' %}
+    {% set logged_in = session.get('loggedin') %}
+    {% macro nav_link(endpoint, label, icon, extra_endpoints=[]) -%}
+      {% set active = current_endpoint == endpoint or current_endpoint in extra_endpoints %}
+      <li class="nav-item">
+        <a class="nav-link{% if active %} active{% endif %}" href="{{ url_for(endpoint) }}"{% if active %} aria-current="page"{% endif %}>
+          <i class="fa-solid {{ icon }}" aria-hidden="true"></i>
+          <span>{{ label }}</span>
+        </a>
+      </li>
+    {%- endmacro %}
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <nav class="navbar navbar-expand-lg navbar-dark app-navbar sticky-top" aria-label="Primary navigation" data-app-navbar>
+      <div class="container-fluid">
+        <a class="navbar-brand fw-semibold" href="{{ url_for('admindashboard') if is_admin else (url_for('home') if logged_in else url_for('welcome')) }}">
+          <span class="brand-mark" aria-hidden="true">M</span>
+          <span>MineRush</span>
+        </a>
+        <button class="navbar-toggler app-navbar__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNav" aria-controls="primaryNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="hamburger" aria-hidden="true"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="primaryNav">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+            {% if is_admin %}
+              {{ nav_link('admindashboard', 'Dashboard', 'fa-gauge-high') }}
+              {{ nav_link('manage', 'Users', 'fa-users-gear', ['view_profile', 'view_user_detailsD', 'view_user_details']) }}
+              {{ nav_link('manage_internships', 'Internships', 'fa-briefcase', ['add_intern', 'Add_intern_from_adminside', 'admin_internship_options', 'view_intern']) }}
+              {{ nav_link('add_faqs_admin', 'Content', 'fa-layer-group', ['update_glossary', 'upload_file', 'upload_document', 'upload_video', 'adddescription', 'add_glossary']) }}
+              <li class="nav-item dropdown">
+                <button class="nav-link dropdown-toggle profile-menu" type="button" id="profileMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-circle-user" aria-hidden="true"></i>
+                  <span>{{ session.get('name', 'Admin') }}</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
+                  <li><a class="dropdown-item" href="{{ url_for('adminprofile') }}"><i class="fa-solid fa-id-badge" aria-hidden="true"></i> My Profile</a></li>
+                  <li><a class="dropdown-item" href="{{ url_for('edit_admin_profile') }}"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit Profile</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{{ url_for('Adminlogout') }}"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Logout</a></li>
+                </ul>
+              </li>
+            {% elif logged_in %}
+              {{ nav_link('home', 'Home', 'fa-house') }}
+              {{ nav_link('Rulesandacts', 'Rules', 'fa-scale-balanced', ['display_data1', 'display_data2', 'display_data3', 'display_data4', 'display_data5', 'display_data6', 'display_data7', 'display_data8', 'display_data9']) }}
+              {{ nav_link('explore_internships', 'Internships', 'fa-briefcase', ['internship_application_form', 'submit_application']) }}
+              {{ nav_link('user_instructions', 'Instructions', 'fa-circle-info') }}
+              {{ nav_link('openfaqs', 'FAQs', 'fa-circle-question') }}
+              <li class="nav-item dropdown">
+                <button class="nav-link dropdown-toggle profile-menu" type="button" id="profileMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-circle-user" aria-hidden="true"></i>
+                  <span>{{ session.get('name', 'Account') }}</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
+                  <li><a class="dropdown-item" href="{{ url_for('profile') }}"><i class="fa-solid fa-id-badge" aria-hidden="true"></i> My Profile</a></li>
+                  <li><a class="dropdown-item" href="{{ url_for('edit_user_profile') }}"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit Profile</a></li>
+                  <li><a class="dropdown-item" href="{{ url_for('userhistory') }}"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Chat History</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Logout</a></li>
+                </ul>
+              </li>
+            {% else %}
+              {{ nav_link('welcome', 'Home', 'fa-house') }}
+              {{ nav_link('about', 'About', 'fa-circle-info') }}
+              {{ nav_link('contact_us', 'Contact', 'fa-envelope') }}
+              <li class="nav-item"><a class="btn btn-primary app-navbar__cta" href="{{ url_for('login_options') }}">Login</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container mt-3" aria-live="polite">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <main id="main-content" tabindex="-1">
+      {% block content %}{% endblock %}
+    </main>
+
+    {% if session.get('loggedin') %}
+      <aside class="chat-widget" aria-label="MineRush chatbot">
+        <button class="chat-fab" type="button" data-chat-toggle aria-controls="chatPanel" aria-expanded="false" aria-label="Open MineRush chatbot">
+          <i class="fa-solid fa-comments" aria-hidden="true"></i>
+        </button>
+        <section class="chat-panel" id="chatPanel" aria-hidden="true" role="dialog" aria-modal="false" aria-labelledby="chatTitle">
+          <header class="chat-panel__header">
+            <div>
+              <p class="eyebrow mb-0">Mining law assistant</p>
+              <h2 class="h6 mb-0" id="chatTitle">MineRushBot</h2>
+            </div>
+            <button class="btn btn-sm btn-outline-light" type="button" data-chat-close aria-label="Close chatbot">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </header>
+          <div class="chat-panel__messages" data-chat-messages role="log" aria-live="polite" aria-relevant="additions"></div>
+          <form class="chat-panel__form" data-chat-form>
+            <label class="visually-hidden" for="chatMessage">Ask about mining laws</label>
+            <textarea id="chatMessage" class="form-control" data-chat-input rows="2" placeholder="Ask about mining laws..." required></textarea>
+            <button class="btn btn-primary" type="submit" aria-label="Send message">
+              <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            </button>
+          </form>
+        </section>
+      </aside>
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='app-modern.js') }}"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

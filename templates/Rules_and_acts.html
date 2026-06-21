@@ -1,276 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-    />
-    <title>Rules and acts</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.12.0/css/all.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css" />
-    <link rel="stylesheet" href="static/rulesandacts.css" />
-  </head>
-  <body>
-    <div>
-      <nav
-        class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button"
-        style="height: 80px; color: #ffffff; background: #4d3837"
-      >
-        <div class="container-fluid">
-          <a class="navbar-brand" href="/Userhomepage" style="color: #ffffff"
-            >MineRush</a
-          ><button
-            data-bs-toggle="collapse"
-            class="navbar-toggler"
-            data-bs-target="#navcol-1"
-          >
-            <span class="visually-hidden">Toggle navigation</span
-            ><span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navcol-1">
-            <ul class="navbar-nav ms-auto">
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  style="color: #ffffff; background-color: #4d3837"
-                  href="/Userhomepage"
-                  ><i class="fa fa-home"></i>&nbsp;Home</a
-                >
-              </li>
-              <li class="nav-item"></li>
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  style="color: #ffffff; background-color: #4d3837"
-                  href="/Myprofile"
-                  ><i class="fa fa-user-circle"></i>&nbsp;Myprofile</a
-                >
-              </li>
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  style="color: #ffffff; background-color: #4d3837"
-                  href="/logout"
-                  ><i class="fas fa-sign-out-alt"></i>Logout</a
-                >
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </div>
-    <div style="text-align: center">
-      <div class="container-fluid">
-        <div class="row">
-          <div
-            class="col-md-4 competencesboxes"
-            style="
-              background: url('static/img/yellow-helmet-table_144627-8586.avif')
-                center / cover no-repeat;
-            "
-          >
-            <h1 class="competencestitles">
-              <strong>Coal Mining Act, </strong><br /><strong>1952</strong>
-            </h1>
-            <p class="competencesparagraph">
-              "Regulatory Framework: Safeguarding Labor Welfare in India's Coal
-              Mines since 1952"<br /><br /><br /><br />
-            </p>
-            <a href="/DisplayCMA1952" style="color: transparent">Click here</a>
-          </div>
-          <div
-            class="col-md-4 competencesboxes"
-            style="
-              background: url('static/img/detonation-desert-sand-lots-smoke-260nw-2348836447.webp')
-                no-repeat;
-              background-size: cover;
-            "
-          >
-            <h1 class="competencestitles" style="color: rgb(246, 251, 255)">
-              <strong>Indian Explosives Act, 1884</strong>
-            </h1>
-            <p class="competencesparagraph" style="color: rgb(255, 255, 255)">
-              "Establishing Safety Standards: The Indian Explosives Act 1884 and
-              its Impact on Explosives Regulation in India."
-            </p>
-            <a href="/DisplayIEA1884" style="color: transparent">Click here!</a>
-          </div>
-          <div
-            class="col-md-4 competencesboxes"
-            style="
-              background: url('static/img/mine.jpg') center / cover no-repeat;
-            "
-          >
-            <h1
-              class="competencestitles"
-              style="
-                border-color: rgb(255, 255, 255);
-                color: rgb(255, 255, 255);
-              "
-            >
-              <strong>Colliery control order, 2000</strong>
-            </h1>
-            <p class="competencesparagraph" style="color: rgb(255, 255, 255)">
-              "Regulating Operations: The Colliery Control Order 2000 and its
-              Impact on Coal Mining Governance."
-            </p>
-            <a href="/DisplayCCO2000" style="color: transparent">Click here!</a>
-          </div>
-        </div>
+{% extends "base_modern.html" %}
+{% block title %}Rules and Acts | MineRush{% endblock %}
+{% block content %}
+{% set rules = [
+  ("Coal Mining Act, 1952", "Regulatory framework for labor welfare and coal mine administration.", "display_data1", "img/yellow-helmet-table_144627-8586.avif"),
+  ("Indian Explosives Act, 1884", "Safety standards and explosive material regulation.", "display_data2", "img/detonation-desert-sand-lots-smoke-260nw-2348836447.webp"),
+  ("Colliery Control Order, 2000", "Operational governance and oversight for collieries.", "display_data3", "img/mine.jpg"),
+  ("Colliery Control Order, 2004", "Updated coal mining oversight and control provisions.", "display_data4", "img/images (2).jpeg"),
+  ("Coal Mines Regulations, 2017", "Modern safety, efficiency, and operational standards.", "display_data5", "img/images (3).jpeg"),
+  ("Payment of Wages Rules, 1956", "Wage regulation and fair compensation for mine workers.", "display_data6", "img/Payment-of-Wages.jpg"),
+  ("CBA Act, 1957", "Collective bargaining and worker rights provisions.", "display_data7", "img/minerush.webp"),
+  ("Land Acquisition Act, 1894", "Land procurement, compensation, and acquisition framework.", "display_data8", "img/Land-Acquisition-Act-LL-Size.jpg"),
+  ("R & R Act, 2013", "Compensation, rehabilitation, and resettlement framework.", "display_data9", "img/61d8fb5226289.jpg")
+] %}
+<section class="page-shell">
+  <div class="container">
+    <div class="row g-4 align-items-end mb-4">
+      <div class="col-lg-8">
+        <p class="eyebrow mb-1">Legal library</p>
+        <h1 class="page-title mb-2">Rules and Acts</h1>
+        <p class="text-secondary mb-0">High-contrast cards make dense mining law references easier to scan and open.</p>
+      </div>
+      <div class="col-lg-4">
+        <label class="form-label" for="ruleSearch">Search rules and acts</label>
+        <input class="form-control" id="ruleSearch" type="search" placeholder="Search title or summary" data-filter-input="[data-rule-card]" data-filter-empty="#ruleEmpty" data-filter-counter="#ruleCounter">
+        <div class="form-text" id="ruleCounter" aria-live="polite"></div>
       </div>
     </div>
-    <div style="text-align: center">
-      <div class="container-fluid">
-        <div class="row">
-          <div
-            class="col-md-4 competencesboxes"
-            style="background: url('static/img/images (2).jpeg')"
-          >
-            <h1 class="competencestitles">
-              <strong
-                ><span style="color: rgb(255, 255, 255)"
-                  >Colliery control order, 2004</span
-                ></strong
-              >
-            </h1>
-            <p class="competencesparagraph">
-              <span style="color: rgb(255, 255, 255)"
-                >"Enhancing Governance: Exploring the Colliery Control Order
-                2004 and its Role in Coal Mining Oversight."</span
-              ><br /><br /><br />
-            </p>
-            <a href="/DisplayCCO2004" style="color: transparent">Click here!</a>
-          </div>
-          <div
-            class="col-md-4 competencesboxes"
-            style="
-              background: url('static/img/images (3).jpeg') center / cover
-                no-repeat;
-            "
-          >
-            <h1 class="competencestitles">
-              <strong
-                ><span style="color: rgb(255, 255, 255)"
-                  >The Coal Mines Regulations, 2017</span
-                ></strong
-              >
-            </h1>
-            <p class="competencesparagraph">
-              <span style="color: rgb(255, 255, 255)"
-                >"Modernizing Standards: Analyzing the Coal Mines Regulations
-                2017 and their Influence on Safety and Efficiency in Coal
-                Mining."</span
-              >
-            </p>
-            <a href="/DisplayCMR2017" style="color: transparent">Click here!</a>
-          </div>
-          <div
-            class="col-md-4 competencesboxes"
-            style="
-              background: url('static/img/Payment-of-Wages.jpg') center / cover
-                no-repeat;
-            "
-          >
-            <h1 class="competencestitles">
-              <strong>Payment of Wages (Mines) Rules, 1956</strong>
-            </h1>
-            <p class="competencesparagraph">
-              "Ensuring Fair Compensation: Examining the Payment of Wages
-              (Mines) Rules, 1956 and their Significance in Wage Regulation for
-              Mine Workers."
-            </p>
-            <a href="/DisplayPaymentofwages1956" style="color: transparent"
-              >Click here!</a
-            >
-          </div>
-        </div>
-      </div>
+
+    <div class="legal-grid">
+      {% for title, description, endpoint, image in rules %}
+        <article class="rule-card d-flex flex-column justify-content-end" style="background-image: url('{{ url_for('static', filename=image) }}')" data-rule-card>
+          <h2 class="mb-2">{{ title }}</h2>
+          <p>{{ description }}</p>
+          <a class="btn btn-light align-self-start" href="{{ url_for(endpoint) }}">Open</a>
+        </article>
+      {% endfor %}
     </div>
-    <div style="text-align: center">
-      <div class="container-fluid">
-        <div class="row">
-          <div
-            class="col-md-4 competencesboxes"
-            style="
-              background: url('static/img/minerush.webp') no-repeat;
-              background-size: cover;
-            "
-          >
-            <h1 class="competencestitles">
-              <strong
-                ><span style="color: rgb(255, 255, 255)"
-                  >CBA Act, 1957</span
-                ></strong
-              >
-            </h1>
-            <p class="competencesparagraph">
-              <span style="color: rgb(255, 255, 255)"
-                >"Empowering Labor: Unveiling the CBA Act, 1957 and its Role in
-                Facilitating Collective Bargaining Agreements for Workers'
-                Rights."</span
-              ><br /><br /><br /><br />
-            </p>
-            <a href="/DisplayCBAact1957" style="color: transparent"
-              >Click here!</a
-            >
-          </div>
-          <div
-            class="col-md-4 competencesboxes"
-            style="
-              background: url('static/img/Land-Acquisition-Act-LL-Size.jpg')
-                no-repeat;
-              background-size: cover;
-            "
-          >
-            <h1 class="competencestitles">
-              <strong
-                ><span style="color: rgb(7, 5, 5)"
-                  >Land Acquisition Act, 1894</span
-                ></strong
-              >
-            </h1>
-            <p class="competencesparagraph">
-              "Land Acquisition Framework: A Look into the Land Acquisition Act
-              1894 and its Implications on Land Procurement and Compensation."
-            </p>
-            <a href="/DisplayLandacquisition1894" style="color: transparent"
-              >Click here!</a
-            >
-          </div>
-          <div
-            class="col-md-4 competencesboxes"
-            style="
-              background: url('static/img/61d8fb5226289.jpg') no-repeat;
-              background-size: cover;
-            "
-          >
-            <h1 class="competencestitles">
-              <strong>R &amp; R Act, 2013</strong>
-            </h1>
-            <p class="competencesparagraph">
-              <span style="color: rgb(0, 0, 0)"
-                >"Balancing Development and Welfare: Exploring the Right to Fair
-                Compensation and Transparency in Land Acquisition,
-                Rehabilitation and Resettlement Act (R&amp;R Act) 2013."</span
-              >
-            </p>
-            <a href="/DisplayRandR" style="color: transparent">Click here!</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+    <p class="alert alert-warning mt-3 filter-empty" id="ruleEmpty" hidden>No rules or acts match your search.</p>
+  </div>
+</section>
+{% endblock %}

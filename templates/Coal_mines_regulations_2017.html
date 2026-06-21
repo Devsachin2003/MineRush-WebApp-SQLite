@@ -49,7 +49,7 @@
 <body>
   <nav class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button" style="height: 80px; color: #ffffff; background: #4d3837">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="{{ url_for('admindashboard') if session.get('responsibility') == 'admin' else (url_for('home') if session.get('loggedin') else url_for('welcome')) }}">
         <span style="font-weight: normal !important; color: rgba(255, 255, 255, 0.9);">MineRush</span>
       </a>
       <button

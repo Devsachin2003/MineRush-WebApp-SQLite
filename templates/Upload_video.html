@@ -55,7 +55,7 @@
                 <a
                   class="nav-link active"
                   style="color: #ffffff; background-color: #4d3837"
-                  href="#"
+                  href="{{ url_for('adminprofile') if session.get('responsibility') == 'admin' else url_for('profile') }}"
                 >
                   <i class="fa fa-user-circle"></i>My Profile
                 </a>

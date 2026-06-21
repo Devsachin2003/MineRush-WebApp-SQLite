@@ -27,36 +27,68 @@ DB_PATH = 'users.db'
 
 # File Upload Configuration
 app.config['UPLOAD_FOLDER'] = "static/Articles/rules and acts"
-ALLOWED_EXTENSIONS = {'pdf', 'jpg', 'mp4'}
+ALLOWED_EXTENSIONS = {'pdf', 'jpg', 'jpeg', 'png', 'webp', 'mp4'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Load API key
-if os.path.exists("api_key.json"):
+def wants_json():
+    return (
+        request.headers.get('X-Requested-With') == 'fetch'
+        or 'application/json' in request.headers.get('Accept', '')
+        or request.is_json
+    )
+
+def row_to_dict(row):
+    return dict(row) if row else None
+
+def rows_to_dicts(rows):
+    return [dict(row) for row in rows]
+
+def json_error(message, status=400):
+    return jsonify({"ok": False, "error": message}), status
+
+def require_login_json():
+    if 'loggedin' not in session:
+        if wants_json():
+            return json_error("Please sign in to continue.", 401)
+        return redirect(url_for('Userslogin'))
+    return None
+
+# Gemini chatbot configuration
+model = None
+chatbot_config_error = None
+
+def load_gemini_api_key():
+    env_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    placeholder_values = {
+        "replace-with-a-valid-gemini-api-key",
+        "replace-with-a-new-valid-gemini-api-key",
+        "your-new-valid-gemini-api-key",
+    }
+    if env_key and env_key.strip() not in placeholder_values:
+        return env_key.strip(), "environment"
+
+    if os.getenv("ALLOW_LEGACY_API_KEY_JSON") != "true":
+        return None, None
+
+    if not os.path.exists("api_key.json"):
+        return None, None
+
     try:
-        # Read the api_key.json file
-        with open("api_key.json", "r") as file:
+        with open("api_key.json", "r", encoding="utf-8") as file:
             data = json.load(file)
-            api_key = data.get("key")  # Safely retrieve the API key from the JSON data
+            legacy_key = (data.get("key") or "").strip()
+            return legacy_key or None, "api_key.json"
+    except (json.JSONDecodeError, OSError) as err:
+        print(f"Error loading api_key.json: {err}")
+        return None, None
 
-            # If the key doesn't exist in the file, handle it
-            if not api_key:
-                raise KeyError("API key 'key' not found in the JSON file.")
-        
-    except (json.JSONDecodeError, KeyError) as e:
-        print(f"Error loading API key: {e}")
-        api_key = None  # Set api_key to None if there's an error
-else:
-    print("Warning: api_key.json not found.")
-    api_key = None  # Set api_key to None if the file doesn't exist
+api_key, api_key_source = load_gemini_api_key()
 
-# Check if API key is available
 if api_key:
-    # Configure the genai client with the API key
     genai.configure(api_key=api_key)
 
-    # Define the generation configuration for the model
     generation_config = {
         "temperature": 1,
         "top_p": 0.95,
@@ -65,22 +97,40 @@ if api_key:
         "response_mime_type": "text/plain",
     }
 
-    # Initialize the model with required configuration
     model = genai.GenerativeModel(
-        model_name="gemini-2.5-flash",
+        model_name=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
         generation_config=generation_config,
         system_instruction="The chatbot should answer queries specifically related to mining laws...",
     )
-
+    print(f"Gemini chatbot configured from {api_key_source}.")
 else:
-    print("API key is required to configure the model.")
+    chatbot_config_error = (
+        "Gemini API key is not configured. Add a valid GEMINI_API_KEY to your .env file."
+    )
+    print(chatbot_config_error)
     
 def send_message(message, history):
+    if model is None:
+        raise RuntimeError(chatbot_config_error or "Gemini chatbot is not configured.")
     history.append({"role": "user", "parts": message})
     chat = model.start_chat(history=history)
     response = chat.send_message(message)
     history.append({"role": "model", "parts": response.text})
     return response.text, history
+
+def public_chatbot_error(error):
+    details = str(error).lower()
+    if "consumer_suspended" in details or "suspended" in details:
+        return (
+            "Gemini API access is suspended for the configured key. "
+            "Replace it with a valid GEMINI_API_KEY in the .env file and restart the app."
+        ), 503
+    if "permission denied" in details or "403" in details:
+        return (
+            "Gemini rejected the configured API key. "
+            "Check that GEMINI_API_KEY is valid and enabled for the Generative Language API."
+        ), 503
+    return "Chatbot service is temporarily unavailable. Please try again later.", 502
 
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
@@ -146,6 +196,7 @@ def Adminslogin():
         if admin:
             session['loggedin'] = True
             session['email'] = admin['email']
+            session['responsibility'] = 'admin'
             return redirect(url_for('admindashboard'))
         else:
             error = 'Please enter correct email / password !'
@@ -155,12 +206,14 @@ def Adminslogin():
 def logout():
     session.pop('loggedin', None)
     session.pop('email', None)
+    session.pop('responsibility', None)
     return redirect(url_for('login'))
 
 @app.route("/Alogout")
 def Adminlogout():
     session.pop('loggedin', None)
     session.pop('email', None)
+    session.pop('responsibility', None)
     return redirect(url_for('login'))
 
 @app.route("/Loginoptions")
@@ -270,6 +323,12 @@ def admindashboard():
         ).fetchall()
 
         conn.close()
+        if wants_json():
+            return jsonify({
+                "ok": True,
+                "users": rows_to_dicts(users),
+                "applications": rows_to_dicts(applications),
+            })
         return render_template("Admin_homepage.html", users=users, applications=applications)
     
     return redirect(url_for('Userslogin'))
@@ -361,9 +420,23 @@ def userhistory():
 @app.route('/Explore_internships')
 def explore_internships():
     if 'loggedin' in session:
+        query = request.args.get('q', '').strip()
         conn = get_db_connection()
-        internships = conn.execute("SELECT * FROM internships").fetchall()
+        if query:
+            search = f"%{query}%"
+            internships = conn.execute(
+                """
+                SELECT * FROM internships
+                WHERE title LIKE ? OR company LIKE ? OR location LIKE ? OR description LIKE ? OR requirements LIKE ?
+                ORDER BY id DESC
+                """,
+                (search, search, search, search, search)
+            ).fetchall()
+        else:
+            internships = conn.execute("SELECT * FROM internships ORDER BY id DESC").fetchall()
         conn.close()
+        if wants_json():
+            return jsonify({"ok": True, "internships": rows_to_dicts(internships)})
         return render_template('Explore_internships.html', internships=internships)
     else:
         return redirect(url_for('Userslogin'))
@@ -381,7 +454,19 @@ def internship_application_form():
 @app.route('/submit_application', methods=['GET', 'POST'])
 def submit_application():
     if request.method == 'POST':
-        # Get form data
+        required_fields = [
+            'name', 'gender', 'dob', 'phone', 'email', 'address',
+            'degree_branch', 'year_of_study', 'company_name',
+            'company_email', 'skills', 'internship_role'
+        ]
+        missing = [field.replace('_', ' ') for field in required_fields if not request.form.get(field)]
+        if missing:
+            message = f"Missing required fields: {', '.join(missing)}"
+            if wants_json():
+                return json_error(message, 422)
+            flash(message, 'danger')
+            return redirect(url_for('internship_application_form'))
+
         name = request.form['name']
         gender = request.form['gender']
         dob = request.form['dob']
@@ -397,12 +482,16 @@ def submit_application():
         
         # Handle file upload
         if 'resume' not in request.files:
+            if wants_json():
+                return json_error('Please upload your resume as a PDF.', 422)
             flash('No file part', 'danger')
             return redirect(request.url)
         
         resume = request.files['resume']
         
         if resume.filename == '':
+            if wants_json():
+                return json_error('Please choose a PDF resume before submitting.', 422)
             flash('No selected file', 'danger')
             return redirect(request.url)
         
@@ -423,13 +512,29 @@ def submit_application():
                 ))
                 conn.commit()
                 conn.close()
+                if wants_json():
+                    return jsonify({
+                        "ok": True,
+                        "message": "Application submitted successfully.",
+                        "application": {
+                            "name": name,
+                            "email": email,
+                            "company_name": company_name,
+                            "internship_role": internship_role,
+                            "status": "Pending",
+                        }
+                    }), 201
                 flash('Application submitted successfully!', 'success')
             except Exception as err:
+                if wants_json():
+                    return json_error(f'Error: {err}', 500)
                 flash(f'Error: {err}', 'danger')
                 return redirect(url_for('internship_application_form'))
             
             return redirect(url_for('internship_application_form'))
         else:
+            if wants_json():
+                return json_error('Only PDF files are allowed for resumes.', 422)
             flash('Only PDF files are allowed', 'danger')
             return redirect(request.url)
 
@@ -468,13 +573,38 @@ def Rulesandacts():
     else:
         return redirect(url_for('Userslogin'))
 
+@app.route("/api/rulesandacts")
+def api_rules_and_acts():
+    auth = require_login_json()
+    if auth:
+        return auth
+    query = request.args.get('q', '').strip()
+    conn = get_db_connection()
+    if query:
+        search = f"%{query}%"
+        rows = conn.execute(
+            """
+            SELECT rulename, description, document, video
+            FROM rulesandacts
+            WHERE rulename LIKE ? OR description LIKE ?
+            ORDER BY rulename
+            """,
+            (search, search)
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT rulename, description, document, video FROM rulesandacts ORDER BY rulename"
+        ).fetchall()
+    conn.close()
+    return jsonify({"ok": True, "rules": rows_to_dicts(rows)})
+
 @app.route("/Manage_users", methods=['GET'])
 def manage():
     if 'loggedin' in session:
         conn = get_db_connection()
         users = conn.execute("SELECT * FROM userstable").fetchall()
         conn.close()
-        return render_template('manage_users.html', users=users)
+        return render_template('Manage_users.html', users=users)
     else:
         return redirect(url_for("user_login"))
 @app.route('/delete_user', methods=['POST'])
@@ -577,18 +707,35 @@ Regards,
         )
 
         # Redirect to Gmail draft
+        if wants_json():
+            return jsonify({
+                "ok": True,
+                "message": f"{applicant_name}'s application was approved.",
+                "status": "Approved",
+                "gmail_url": gmail_url,
+            })
         return redirect(gmail_url)
 
     # If applicant not found
     conn.close()
+    if wants_json():
+        return json_error("Application not found.", 404)
     return "Application not found", 404
 
-@app.route('/cancel/<string:name>')
+@app.route('/cancel/<string:name>', methods=['GET', 'POST'])
 def cancel(name):
     conn = get_db_connection()
+    intern = conn.execute("SELECT * FROM internship_applications WHERE name = ?", (name,)).fetchone()
+    if not intern:
+        conn.close()
+        if wants_json():
+            return json_error("Application not found.", 404)
+        return "Application not found", 404
     conn.execute("UPDATE internship_applications SET status = 'Cancelled' WHERE name = ?", (name,))
     conn.commit()
     conn.close()
+    if wants_json():
+        return jsonify({"ok": True, "message": f"{name}'s application was cancelled.", "status": "Cancelled"})
     return redirect(url_for('admindashboard'))
 
 @app.route("/Update_glossary")
@@ -620,7 +767,10 @@ def add_faqs_admin():
 @app.route("/Glossary")
 def Glossary():
     if 'loggedin' in session:
-        return render_template("Glossary.html")
+        conn = get_db_connection()
+        glossary_entries = conn.execute("SELECT * FROM glossary ORDER BY term").fetchall()
+        conn.close()
+        return render_template("Glossary.html", glossary_entries=glossary_entries)
     else:
         return redirect(url_for('Userslogin'))
 
@@ -731,9 +881,21 @@ def edit_user_profile():
             picture_file.save(picture_path)
         else:
             existing_user = get_user_details(session['email'])
-            picture_filename = existing_user.get('picture') if existing_user else None
+            picture_filename = existing_user['picture'] if existing_user and 'picture' in existing_user.keys() else None
 
         update_user_details(session['email'], name, username, role, gender, picture_filename)
+        if wants_json():
+            return jsonify({
+                "ok": True,
+                "message": "Profile updated successfully.",
+                "user": {
+                    "name": name,
+                    "username": username,
+                    "role": role,
+                    "gender": gender,
+                    "picture": picture_filename,
+                }
+            })
         return redirect(url_for('profile'))
 
     user = get_user_details(session['email'])
@@ -761,11 +923,23 @@ def edit_admin_profile():
         else:
             # If picture not uploaded, retain the existing one
             existing_admin = get_admin_details(session['email'])
-            picture_filename = existing_admin.get('picture') if existing_admin and 'picture' in existing_admin else None
+            picture_filename = existing_admin['picture'] if existing_admin and 'picture' in existing_admin.keys() else None
 
         # ✅ Safe update with column check inside this function
         update_admin_details(session['email'], name, username, role, gender, picture_filename)
-        return redirect(url_for('profile'))
+        if wants_json():
+            return jsonify({
+                "ok": True,
+                "message": "Admin profile updated successfully.",
+                "admin": {
+                    "name": name,
+                    "username": username,
+                    "role": role,
+                    "gender": gender,
+                    "picture": picture_filename,
+                }
+            })
+        return redirect(url_for('adminprofile'))
 
     admin = get_admin_details(session['email'])
     return render_template('Admin_editprofile.html', admin=admin)
@@ -896,10 +1070,20 @@ def add_glossary():
 @app.route("/Displayglossary")
 def display_glossary():
     if 'loggedin' in session:
+        query = request.args.get('q', '').strip()
         conn = get_db_connection()
-        glossary_entries = conn.execute("SELECT * FROM glossary").fetchall()
+        if query:
+            search = f"%{query}%"
+            glossary_entries = conn.execute(
+                "SELECT * FROM glossary WHERE term LIKE ? OR definition LIKE ? ORDER BY term",
+                (search, search)
+            ).fetchall()
+        else:
+            glossary_entries = conn.execute("SELECT * FROM glossary ORDER BY term").fetchall()
         conn.close()
 
+        if wants_json():
+            return jsonify({"ok": True, "glossary_entries": rows_to_dicts(glossary_entries)})
         return render_template('Glossary.html', glossary_entries=glossary_entries)
     else:
         return redirect(url_for("Userslogin"))
@@ -907,7 +1091,27 @@ def display_glossary():
 
 @app.route("/Manage_internships")
 def manage_internships():
-    return render_template("Manage_internships.html")
+    auth = require_login_json()
+    if auth:
+        return auth
+    query = request.args.get('q', '').strip()
+    conn = get_db_connection()
+    if query:
+        search = f"%{query}%"
+        internships = conn.execute(
+            """
+            SELECT * FROM internships
+            WHERE title LIKE ? OR company LIKE ? OR location LIKE ? OR duration LIKE ?
+            ORDER BY id DESC
+            """,
+            (search, search, search, search)
+        ).fetchall()
+    else:
+        internships = conn.execute("SELECT * FROM internships ORDER BY id DESC").fetchall()
+    conn.close()
+    if wants_json():
+        return jsonify({"ok": True, "internships": rows_to_dicts(internships)})
+    return render_template("Manage_internships.html", internships=internships)
 
 
 @app.route("/Admin_internship_options")
@@ -991,10 +1195,20 @@ def index():
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    user_message = request.json.get('message')
-    history = request.json.get('history')
-    response, history = send_message(user_message, history)
-    return jsonify({'message': response, "history": history})
+    if not request.is_json:
+        return json_error("Chat requests must be sent as JSON.", 415)
+    if model is None:
+        return json_error(chatbot_config_error or "Gemini chatbot is not configured.", 503)
+    user_message = (request.json.get('message') or '').strip()
+    history = request.json.get('history') or []
+    if not user_message:
+        return json_error("Please enter a message.", 422)
+    try:
+        response, history = send_message(user_message, history)
+    except Exception as err:
+        message, status = public_chatbot_error(err)
+        return json_error(message, status)
+    return jsonify({'ok': True, 'message': response, "history": history})
 
 
 if __name__ == "__main__":

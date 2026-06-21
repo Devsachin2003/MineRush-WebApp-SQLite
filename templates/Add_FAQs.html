@@ -29,7 +29,7 @@
         style="height: 80px; color: #ffffff; background: #4e3b3a"
       >
         <div class="container-fluid">
-          <a class="navbar-brand" href="#"
+          <a class="navbar-brand" href="{{ url_for('admindashboard') if session.get('responsibility') == 'admin' else (url_for('home') if session.get('loggedin') else url_for('welcome')) }}"
             ><span style="font-weight: normal !important"
               >MineRush&nbsp;</span
             ></a
@@ -47,7 +47,7 @@
                 <a
                   class="nav-link active"
                   style="color: #ffffff; background-color: #4d3837"
-                  href="#"
+                  href="{{ url_for('admindashboard') if session.get('responsibility') == 'admin' else url_for('home') }}"
                   ><i class="fa fa-home"></i>&nbsp;Home</a
                 >
               </li>
@@ -57,7 +57,7 @@
                 <a
                   class="nav-link active"
                   style="color: #ffffff; background-color: #4d3837"
-                  href="#"
+                  href="{{ url_for('adminprofile') if session.get('responsibility') == 'admin' else url_for('profile') }}"
                   ><i class="fa fa-user-circle"></i>Myprofile</a
                 >
               </li>
@@ -65,7 +65,7 @@
                 <a
                   class="nav-link active"
                   style="color: #ffffff; background-color: #4d3837"
-                  href="#"
+                  href="{{ url_for('Adminlogout') if session.get('responsibility') == 'admin' else url_for('logout') }}"
                   ><i class="fas fa-sign-out-alt" style="font-size: 16px"></i
                   >Logout</a
                 >

@@ -29,7 +29,7 @@
         style="height: 80px; color: #ffffff; background: #4d3837"
       >
         <div class="container-fluid">
-          <a class="navbar-brand" href="#" style="color: #ffffff">MineRush</a
+          <a class="navbar-brand" href="{{ url_for('admindashboard') if session.get('responsibility') == 'admin' else (url_for('home') if session.get('loggedin') else url_for('welcome')) }}" style="color: #ffffff">MineRush</a
           ><button
             data-bs-toggle="collapse"
             class="navbar-toggler"

@@ -1,182 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-    />
-    <title>My Profile</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.12.0/css/all.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='My_profilefont.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='My_profile.css') }}"
-    />
-    <style>
-      body {
-        font-family: "Roboto", sans-serif;
-        background-color: #f0f8ff;
-        color: #333;
-        margin: 0;
-        padding: 0;
-      }
-      .navbar {
-        height: 80px;
-        color: #ffffff;
-        background: #4d3837;
-      }
-      .page {
-        min-height: 100%;
-      }
-      .labels {
-        font-weight: bold;
-      }
-      .btn-success {
-        background: rgb(173, 36, 36);
-      }
-    </style>
-  </head>
-  <body>
-    <div>
-      <nav
-        class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button"
-      >
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">
-            <span style="font-weight: normal !important">MineRush</span>
-          </a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navcol-1"
-          >
-            <span class="visually-hidden">Toggle navigation</span>
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navcol-1">
-            <ul class="navbar-nav ms-auto">
-              <li class="nav-item">
-                <a class="nav-link" style="color: #ffffff" href="/Userhomepage">
-                  <i class="fa fa-home"></i>&nbsp;Home
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" style="color: #ffffff" href="/Userhistory">
-                  <i class="fa fa-history"></i>&nbsp;History
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" style="color: #ffffff" href="/logout">
-                  <i class="fa fa-sign-out"></i>&nbsp;Logout
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </div>
-    <main class="page">
-      <section class="clean-block about-us">
-        <div class="container">
-          <div class="row">
-            <div class="col">
-              <h2 class="text-center text-info" style="padding-top: 41px">
-                <span style="color: rgb(195, 11, 11)">MY PROFILE</span>
-              </h2>
+{% extends "base_modern.html" %}
+{% block title %}My Profile | MineRush{% endblock %}
+{% block content %}
+<section class="page-shell">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <article class="surface p-3 p-md-4">
+          <div class="row g-4 align-items-center">
+            <div class="col-md-4 text-center">
+              <img class="profile-avatar" src="{{ url_for('static', filename='Articles/rules and acts/' ~ (user.picture or 'avatar_2x.png')) }}" alt="Profile picture for {{ user.name }}">
             </div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-sm-6 col-lg-4">
-              <div class="card clean-card text-center">
-                <img
-                  class="card-img-top w-100"
-                  src="static/Articles/rules and acts/{{user.picture }}"
-                  alt="User profile picture"
-                />
-                <div class="card-body">
-                  <div class="info">
-                    <div class="row">
-                      <div class="col">
-                        <p class="labels">Name</p>
-                      </div>
-                      <div class="col">
-                        <p>{{ user.name }}</p>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col">
-                        <p class="labels">E-mail</p>
-                      </div>
-                      <div class="col">
-                        <p>{{ user.email }}</p>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col">
-                        <p class="labels">Gender</p>
-                      </div>
-                      <div class="col">
-                        <p>{{ user.gender }}</p>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col">
-                        <p class="labels">Phone</p>
-                      </div>
-                      <div class="col">
-                        <p>{{ user.phone }}</p>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col">
-                        <p class="labels">Username</p>
-                      </div>
-                      <div class="col">
-                        <p>{{ user.username }}</p>
-                      </div>
-                      <br />
-                      <div class="col">
-                        <p class="labels">Name of organization</p>
-                      </div>
-                      <div class="col">
-                        <p>{{ user.organization }}</p>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col">
-                        <a class="btn btn-success" href="/Editprofile">
-                          <i class="fas fa-pencil-alt"></i>&nbsp;Edit Profile
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div class="col-md-8">
+              <p class="eyebrow mb-1">User profile</p>
+              <h1 class="page-title mb-3">{{ user.name }}</h1>
+              <dl class="row mb-4">
+                <dt class="col-sm-4">Email</dt><dd class="col-sm-8 text-break">{{ user.email }}</dd>
+                <dt class="col-sm-4">Gender</dt><dd class="col-sm-8">{{ user.gender }}</dd>
+                <dt class="col-sm-4">Phone</dt><dd class="col-sm-8">{{ user.phone }}</dd>
+                <dt class="col-sm-4">Username</dt><dd class="col-sm-8">{{ user.username }}</dd>
+                <dt class="col-sm-4">Organization</dt><dd class="col-sm-8">{{ user.organization }}</dd>
+                <dt class="col-sm-4">Role</dt><dd class="col-sm-8">{{ user.role }}</dd>
+              </dl>
+              <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-primary" href="{{ url_for('edit_user_profile') }}">
+                  <i class="fa-solid fa-pen" aria-hidden="true"></i> Edit Profile
+                </a>
+                <a class="btn btn-outline-secondary" href="{{ url_for('userhistory') }}">
+                  <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> History
+                </a>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
